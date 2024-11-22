@@ -8,7 +8,6 @@ import { UserProfile } from "../user-profile";
 import ModeToggle from "../mode-toggle";
 import { BlocksIcon } from "lucide-react";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
-import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog, DialogClose } from "@radix-ui/react-dialog";
@@ -22,13 +21,8 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export default function NavBar() {
-    let userId = null;
-    /* eslint-disable react-hooks/rules-of-hooks */
-    if (config?.auth?.enabled) {
-        const user = useAuth();
-        userId = user?.userId;
-    }
-
+    const user = useAuth();
+    const userId = user?.userId;
     return (
         <div className="flex min-w-full fixed justify-between p-2 border-b z-10 dark:bg-black dark:bg-opacity-50 bg-white">
             <div className="flex justify-between w-full min-[825px]:hidden">

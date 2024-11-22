@@ -148,7 +148,7 @@ export default function Pricing() {
         const stripe = await stripePromise;
 
         const response = await stripe?.redirectToCheckout({
-          sessionId: data.sessionId,
+          sessionId: data.sessionId
         });
 
         return response

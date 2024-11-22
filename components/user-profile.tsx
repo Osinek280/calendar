@@ -13,7 +13,6 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import config from "@/config"
 import { SignOutButton, useUser } from "@clerk/nextjs"
 import {
     CreditCard,
@@ -22,14 +21,8 @@ import {
     User
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 export function UserProfile() {
-    const router = useRouter()
-
-    if (!config?.auth?.enabled) {
-        router.back()
-    }
     const { user } = useUser();
     return (
         <DropdownMenu>

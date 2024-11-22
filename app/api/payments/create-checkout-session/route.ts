@@ -11,14 +11,14 @@ export async function POST(req: NextRequest) {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [{ price: priceId, quantity: 1 }],
-        metadata: { userId, email, subscription },
+        metadata: { userId, email, subscription, },
+        customer_email: email,
         mode: "subscription",
         success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/cancel`,
         allow_promotion_codes: true,
       });
-
-
+    
       return NextResponse.json({ sessionId: session.id });
     } catch (error) {
       console.error("Error creating checkout session:", error);
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         payment_method_types: ["card"],
         line_items: [{ price: priceId, quantity: 1 }],
         metadata: { userId, email, subscription },
+        customer_email: email,
         mode: "payment",
         success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.FRONTEND_URL}/cancel`,
