@@ -2,15 +2,23 @@ import * as React from "react"
 import { Button, ButtonProps } from "@/components/ui/button"
 import { CheckIcon, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+
+interface CopyButtonProps extends ButtonProps {
+  value: string
+}
 
 export function CopyButton({
   className,
   variant = "ghost",
+  value,
   ...props
-}: ButtonProps) {
+}: CopyButtonProps) {
   const [hasCopied, setHasCopied] = React.useState(false)
 
   const handleClick = () => {
+    navigator.clipboard.writeText(value)
+    toast.success("Copied to clipboard!");
     setHasCopied(true)
     setTimeout(() => {
       setHasCopied(false)

@@ -14,8 +14,8 @@ export async function POST(req: NextRequest) {
         metadata: { userId, email, subscription, },
         customer_email: email,
         mode: "subscription",
-        success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+        success_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/cancel`,
         allow_promotion_codes: true,
       });
     
@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
         metadata: { userId, email, subscription },
         customer_email: email,
         mode: "payment",
-        success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+        success_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/cancel`,
       });
 
       return NextResponse.json({ sessionId: session.id });

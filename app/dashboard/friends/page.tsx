@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Share2 } from "lucide-react"
 import { CopyButton } from "@/components/ui/copy-button";
 
 const suggestedFriends = [
@@ -25,7 +24,6 @@ export default function Friends() {
   const { user } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter the suggested friends based on the search query
   const filteredSuggestions = suggestedFriends.filter((friend) =>
     friend.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -44,7 +42,7 @@ export default function Friends() {
               <p className="text-sm text-gray-400">get.howbout.app</p>
             </div>
           </div>
-          <CopyButton />
+          <CopyButton value={`${process.env.NEXT_PUBLIC_FRONTEND_URL!}/dashboard/friends/add-friend/${user?.id}`} />
         </div>
         <Input
           placeholder="Find people"

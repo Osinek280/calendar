@@ -20,6 +20,13 @@ model user {
   subscription      String?
 }
 
+model friend {
+  id                Int      @id @default(autoincrement())
+  created_time      DateTime @default(now())
+  user_id           String
+  friend_id         String
+}
+
 model payments {
   id               Int      @id @default(autoincrement())
   created_time     DateTime @default(now())

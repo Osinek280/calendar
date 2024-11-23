@@ -1,26 +1,45 @@
-"use server";
+"server only";
 
 import { auth } from "@clerk/nextjs/server";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-export async function actionTemplate() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return "You must be signed in";
-  }
-
+export async function actionTemplate( friendId : string) {
   const supabase = createServerComponentClient({ cookies });
 
   try {
-    let { data: user, error } = await supabase.from("user").select("*");
+    const { data: user, error } = await supabase
+    .from('user') 
+    .select('*')
+    .eq('user_id', friendId) 
+    .single();  
 
-    if (user) return user;
+    if (error) {
+      return { friend: null, error: error.message }
+    }
 
-    if (error) return error;
+    return { friend: user };
   } catch (error: any) {
-    throw new Error(error.message);
+    return { friend: null, error: error.message };
   }
+}
 
+export async function addFriend( userId : string, friendId: string) {
+  const supabase = createServerComponentClient({ cookies });
+
+  console.log('lol')
+
+  try {
+    const {error } = await supabase
+    .from('friend')
+    .insert([{ user_id: userId, friend_id: friendId }])
+
+    if (error) {
+      return { succes: false }
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    return { error: error.message };
+  }
 }
