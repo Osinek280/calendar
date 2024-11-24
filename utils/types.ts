@@ -2,6 +2,16 @@ import { z } from "zod";
 
 export type userCreateProps = z.infer<typeof userCreateSchema>;
 
+type NavItem = {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+type NavItemWithSeparator = { separator: true };
+
+export type NavItemType = NavItem | NavItemWithSeparator;
+
 const userCreateSchema = z.object({
   email: z.string().email({ message: "Invalid email" }).describe("user email"),
   first_name: z
