@@ -18,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Separator } from '@/components/ui/separator';
 
 
 interface CalendarHeaderProps {
@@ -29,13 +28,13 @@ interface CalendarHeaderProps {
   currentView: 'week' | 'month';
 }
 
-export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
+export const CalendarHeader = ({
   currentDate,
   onPrevPeriod,
   onNextPeriod,
   onViewChange,
   currentView,
-}) => {
+}: CalendarHeaderProps) => {
   const formatDate = () => {
     if (currentView === 'month') {
       return format(currentDate, 'MMMM yyyy');
@@ -51,15 +50,15 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-semibold">{formatDate()}</h2>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 h-9">
         <Sheet>
-          <SheetTrigger>
+          <SheetTrigger asChild>
             <Button variant="outline" size="sm" className='items-center gap-1'>
               <Plus className='h- w-4' />
-              <p>Add</p>
+              <p className='hidden sm:flex'>Add</p>
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className='w-[600px]'>
             <SheetHeader>
               <SheetTitle>Are you absolutely sure?</SheetTitle>
               <SheetDescription>
@@ -84,7 +83,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           </div>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className='w-[70px]'>
               {currentView}
             </Button>
