@@ -4,7 +4,7 @@ import ModeToggle from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { UserProfile } from '@/components/user-profile'
 import { NAV_ITEMS } from '@/utils/constants'
 import { HamburgerMenuIcon } from '@radix-ui/react-icons'
@@ -15,16 +15,18 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col">
       <header className="flex h-14 items-center gap-4 border-b px-4">
-        <Dialog>
-          <SheetTrigger className="min-[1024px]:hidden p-2 transition">
+        <Sheet>
+          <SheetTrigger asChild className='min-[1024px]:hidden p-2 transition'>
+            <div>
             <HamburgerMenuIcon />
             <Link href="/dashboard">
               <span className="sr-only">Home</span>
             </Link>
+            </div>
           </SheetTrigger>
           <SheetContent side="left">
             <SheetHeader>
-              <Link href="/">
+              <Link href='/'>
                 <SheetTitle>Nextjs Starter Kit</SheetTitle>
               </Link>
             </SheetHeader>
@@ -33,7 +35,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
                 "separator" in item ? (
                   <Separator key={`separator-${index}`} className="my-3" />
                 ) : (
-                  <DialogClose key={item.href}>
+                  <DialogClose asChild key={item.href}>
                     <Link href={item.href}>
                       <Button variant="outline" className='w-full'>
                         {item.label}
@@ -44,7 +46,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             )}
             </div>
           </SheetContent>
-        </Dialog>
+        </Sheet>
         <div className="flex justify-center items-center gap-2 ml-auto">
           <UserProfile />
           <ModeToggle />

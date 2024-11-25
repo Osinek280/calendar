@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ColorPicker } from "./color-picker"
+import { auth } from "@clerk/nextjs/server"
+import { useAuth } from "@clerk/nextjs"
+import { addCalendar } from "@/utils/actions/add-calendar"
 
 // Walidacja formularza za pomocą zod
 const formSchema = z.object({
@@ -20,18 +23,28 @@ const formSchema = z.object({
 
 export default function CalendarForm() {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '', // Domyślnie pusty
+      title: '', 
       color: '#aabbcc', // Domyślny kolor
       isPublic: false, // Domyślnie prywatny
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Form submitted with values:", values);
-    // toast.success("Calendar created successfully!");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await addCalendar(values)
+      if (isOpen) {
+        form.reset();
+      }
+      toast.success("Calendar created successfully!");
+      setIsOpen(false)
+    }catch (err) {
+      toast.error("Failed to create calendar");
+      console.log(err)
+    }
   }
 
   function handleOpenChange(open: boolean) {
@@ -64,7 +77,7 @@ export default function CalendarForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
-                  <FormControl onClick={() => {console.log(field)}}>
+                  <FormControl>
                     <Input
                       placeholder="My Calendar"
                       {...field}
