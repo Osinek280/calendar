@@ -63,7 +63,7 @@ export default function CalendarForm() {
         <DialogHeader>
           <DialogTitle>Create Calendar</DialogTitle>
           <DialogDescription>
-            Add a new calendar by filling out the details below. Click save when you're done.
+            Add a new calendar by filling out the details below. Click save when you&#39;re done.
           </DialogDescription>
         </DialogHeader>
 

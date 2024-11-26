@@ -13,7 +13,7 @@ export default function CalendarListPage() {
             <p className="text-3xl">There are no calendars.</p>
             <p>
               You can use the Web version if you have at least one TimeTree
-              shared calendar. <br /> You can't use OS calendar in the Web
+              shared calendar. <br /> You can&#39;t use OS calendar in the Web
               version.
             </p>
             <CalendarForm />
@@ -23,4 +23,3 @@ export default function CalendarListPage() {
     </main>
   );
 }
-
