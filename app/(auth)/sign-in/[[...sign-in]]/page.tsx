@@ -1,7 +1,6 @@
 "use client"
 import PageWrapper from "@/components/wrapper/page-wrapper";
 import { SignIn } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
     return (

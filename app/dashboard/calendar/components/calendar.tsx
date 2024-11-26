@@ -61,7 +61,7 @@ export const Calendar: React.FC = () => {
   const events: Event[] = [
     // { id: '1', title: 'Team Meeting', start: new Date(2024, 0, 3, 10, 0), end: new Date(2024, 0, 3, 11, 0), color: 'blue' },
     // { id: '2', title: 'Project Kickoff', start: new Date(2024, 0, 3, 14, 0), end: new Date(2024, 0, 3, 16, 0), color: 'green' },
-    // { id: '3', title: 'Conference', start: new Date(2024, 0, 5), end: new Date(2024, 0, 7), color: 'purple' },
+    // { id: '3', title: 'Conference', start: new Date(2024, 0, 5, 2, 0), end: new Date(2024, 0, 7), color: 'purple' },
     // { id: '4', title: 'Vacation', start: new Date(2024, 0, 15), end: new Date(2024, 0, 20), color: 'orange' },
     // { id: '5', title: 'Deadline', start: new Date(2024, 0, 10, 9, 0), end: new Date(2024, 0, 10, 17, 0), color: 'red' },
     // { id: '6', title: 'Workshop', start: new Date(2024, 0, 22, 13, 0), end: new Date(2024, 0, 24, 17, 0), color: 'indigo' },
