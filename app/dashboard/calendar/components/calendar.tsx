@@ -6,7 +6,6 @@ import { DayCell } from '@/app/dashboard/calendar/components/day-cell';
 import { WeekView } from '@/app/dashboard/calendar/components/week-view';
 import { getDaysInMonth, getWeekDays } from '@/utils/dateUtils';
 import { addDays, startOfWeek, endOfWeek } from 'date-fns';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
 
 interface Event {
   id: string;

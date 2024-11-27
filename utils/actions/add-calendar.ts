@@ -17,10 +17,6 @@ export async function addCalendar({title, color, isPublic}: CalendarProps) {
     return "You must be signed in";
   }
 
-  console.log("title: ", title)
-  console.log("color: ", color)
-  console.log("isPublic:", isPublic)
-
   const supabase = createServerComponentClient({ cookies });
 
   try {

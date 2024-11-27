@@ -38,25 +38,25 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events }) => {
   };
 
   return (
-    // <div className="h-full border border-gray-200 rounded-lg overflow-hidden">
+    <div className="h-full border rounded-lg overflow-hidden">
       <div className="grid grid-cols-8 h-full">
-        <div className="bg-gray-50 border-r border-gray-200">
-          <div className="h-12 border-b border-gray-200"></div>
+        <div className="border-r">
+          <div className="h-12 border-b"></div>
           {timeSlots.map((hour) => (
-            <div key={hour} className="h-[calc((100%-3rem)/24)] border-b border-gray-200 text-xs text-right pr-1">
+            <div key={hour} className="h-[calc((100%-3rem)/24)] border-b text-xs pr-1 flex items-center justify-center">
               {hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`}
             </div>
           ))}
         </div>
         {weekDays.map((day, dayIndex) => (
           <div key={dayIndex} className="relative">
-            <div className="h-12 border-b border-gray-200 text-center py-1">
+            <div className="h-12 border-b text-center py-1">
               <div className="text-sm font-semibold">{format(day, 'EEE')}</div>
               <div className="text-xs">{format(day, 'd')}</div>
             </div>
             <div className="relative h-[calc(100%-3rem)]">
               {timeSlots.map((hour) => (
-                <div key={hour} className="absolute w-full border-b border-gray-200" style={{ top: `${hour * 100 / 24}%`, height: `${100 / 24}%` }}></div>
+                <div key={hour} className="absolute w-full border-b" style={{ top: `${hour * 100 / 24}%`, height: `${100 / 24}%` }}></div>
               ))}
               {getEventsForDay(day).map((event) => {
                 const { top, height } = calculateEventPosition(event, day);
@@ -82,7 +82,7 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events }) => {
           </div>
         ))}
       </div>
-    // </div>
+    </div>
   );
 };
 
