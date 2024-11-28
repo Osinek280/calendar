@@ -19,16 +19,19 @@ model user {
   user_id           String    @unique
   subscription      String?
   active_calendars  String[] 
+
+  friend friend[]
 }
 
 model friend {
-  id                Int      @id @default(autoincrement())
-  created_time      DateTime @default(now())
-  user_id           String
-  friend_id         String
-  color             String  @default("#aabbcc")
-  nickname          String?  
-  active            Boolean  @default(false) 
+  id        Int      @id @default(autoincrement())
+  created_time DateTime @default(now())
+  user_id   String
+  friend_id String
+  color     String   @default("#aabbcc")
+  nickname  String?  
+  active    Boolean  @default(false) 
+  user      user     @relation(fields: [user_id], references: [user_id])
 }
 
 model calendar {

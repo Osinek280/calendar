@@ -1,12 +1,9 @@
 "use server";
 
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 
 export async function getFriendRequest( friendId : string) {
-  const supabase = createServerComponentClient({ cookies });
-
   try {
     const { data: user, error } = await supabase
     .from('user') 
@@ -24,7 +21,7 @@ export async function getFriendRequest( friendId : string) {
   }
 }
 
-export async function addFriend(friendId: string) {
+export async function addFriend( friendId: string) {
   const { userId } = await auth();
 
   if (userId === friendId) {
@@ -35,35 +32,20 @@ export async function addFriend(friendId: string) {
     return { success: false, error: "You must be signed in." };
   }
 
-  const supabase = createServerComponentClient({ cookies });
-
   try {
-    const { data: existingFriendship, error: checkError } = await supabase
-      .from('friend')
-      .select('id')
-      .or(`(user_id.eq.${userId},friend_id.eq.${friendId}), (user_id.eq.${friendId},friend_id.eq.${userId})`);
+    const { error } = await supabase
+    .from('friend')
+    .insert([
+      { user_id: userId, friend_id: friendId },
+      { user_id: friendId, friend_id: userId }
+    ])
 
-    if (checkError) {
-      return { success: false, error: "Error checking existing friendship." };
-    }
-
-    if (existingFriendship && existingFriendship.length > 0) {
-      return { success: false, error: "You are already friends." };
-    }
-
-    const { error: insertError } = await supabase
-      .from('friend')
-      .insert([
-        { user_id: userId, friend_id: friendId },
-        { user_id: friendId, friend_id: userId }
-      ]);
-
-    if (insertError) {
-      return { success: false, error: "Failed to add friend." };
+    if (error) {
+      return { succes: false }
     }
 
     return { success: true };
   } catch (error: any) {
-    return { success: false, error: error.message };
+    return { error: error.message };
   }
 }

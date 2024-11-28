@@ -1,30 +1,32 @@
 "use server";
 
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 
 export async function getFriends() {
   const { userId } = await auth();
 
   if (!userId) {
-    return "You must be signed in";
+    return { friends: [], success: false };
   }
 
-  const supabase = createServerComponentClient({ cookies });
-
   try {
-    const { data: user, error } = await supabase
+    const { data: friendsList, error } = await supabase
     .from('friend') 
-    .select('*')
-    .eq("user_id", userId)
+    .select(`
+      *,
+      user (
+        *
+      )
+    `)
+    .eq("friend_id", userId)
     
     if (error) {
-      return { friend: null, error: error.message }
+      return { friends: [], success: false };
     }
 
-    return { friend: user };
+    return { friends: friendsList, success: false };
   } catch (error: any) {
-    return { friend: null, error: error.message };
+    return { friends: [], success: false };
   }
 }

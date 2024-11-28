@@ -1,9 +1,7 @@
 "use server";
 
+import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-
 interface CalendarProps {
   title: string;
   color: string;  
@@ -16,8 +14,6 @@ export async function addCalendar({title, color, isPublic}: CalendarProps) {
   if (!userId) {
     return "You must be signed in";
   }
-
-  const supabase = createServerComponentClient({ cookies });
 
   try {
     const {error } = await supabase

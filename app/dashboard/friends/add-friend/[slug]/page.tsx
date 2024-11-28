@@ -1,6 +1,6 @@
 "use client";
 
-import { getFriendRequest, addFriend } from "@/utils/actions/add-friend";
+import { addFriend, getFriendRequest } from "@/utils/actions/add-friend";
 import { Button } from "@/components/ui/button";
 import {
   Avatar,
@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useUser } from "@clerk/nextjs";
 
 interface Friend {
@@ -29,7 +29,8 @@ interface FriendsProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function Friends({ params }: FriendsProps) {
+export default function Friends(props: FriendsProps) {
+  const params = use(props.params);
   const { user } = useUser();
 
   const [friend, setFriend] = useState<Friend | null>(null);
@@ -74,7 +75,7 @@ export default function Friends({ params }: FriendsProps) {
       toast.error("An unexpected error occurred.");
       console.error("Error adding friend:", err);
     }
-  }  
+  }
 
   if (error) {
     return (

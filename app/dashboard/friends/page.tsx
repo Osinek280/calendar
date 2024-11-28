@@ -1,32 +1,64 @@
-"use client";
+"use client"
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { CopyButton } from "@/components/ui/copy-button";
-
-const suggestedFriends = [
-  { name: "Jane Smith", description: "Product Designer in San Francisco" },
-  { name: "John Doe", description: "Software Engineer in New York" },
-  { name: "Jack Smith", status: "Pending", sentDate: "3 days ago" },
-  { name: "Emma Johnson", status: "Pending", sentDate: "1 day ago" },
-  { name: "Chris Brown", status: "Pending", sentDate: "5 days ago" },
-];
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react"
+import { useUser } from "@clerk/nextjs"
+import { CopyButton } from "@/components/ui/copy-button"
+import { getFriends } from "@/utils/actions/get-friends"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Users } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function Friends() {
-  const { user } = useUser();
-  const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useUser()
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [friendsList, setFriendsList] = useState<{
+    nickname: string
+    color: string
+    user: {
+      user_id: string
+      profile_image_url: string
+      first_name: string
+      last_name: string
+      email: string
+    }
+  }[]>([])
 
-  const filteredSuggestions = suggestedFriends.filter((friend) =>
-    friend.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const updateFriendsList = async () => {
+      try {
+        const data = await getFriends()
+        setIsLoading(false)
+        setFriendsList(data.friends)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+
+    updateFriendsList()
+  }, [])
+
+  const filteredFriends = friendsList.filter(friend =>
+    friend.user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    friend.user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    friend.user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
     <div className="flex w-full gap-4">
@@ -51,25 +83,87 @@ export default function Friends() {
         />
         <section className="mt-5">
           <h2 className="text-lg font-semibold mb-2">Your Friends</h2>
-          <ul className="mb-6">
-            {filteredSuggestions.map((friend, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center mb-3"
-              >
-                <div className="flex items-center space-x-4">
-                  <Skeleton className="h-12 w-12 rounded-full" />
-                  <div className="space-y-2">
-                    <p>{friend.name}</p>
-                    <p>{friend.description}</p>
+          <ScrollArea className="h-[400px] pr-4">
+            {isLoading ? (
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[200px]" />
+                      <Skeleton className="h-4 w-[150px]" />
+                    </div>
                   </div>
-                </div>
-                <Button variant="gooeyLeft">Remove</Button>
-              </li>
-            ))}
-          </ul>
+                ))}
+              </div>
+            ) : friendsList.length > 0 ? (
+              <ul className="space-y-4">
+                {filteredFriends.map((friend, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center justify-between p-4 rounded-lg transition-colors hover:bg-muted"
+                  >
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage 
+                          src={friend.user.profile_image_url} 
+                          alt={`${friend.user.first_name} ${friend.user.last_name}`} 
+                        />
+                        <AvatarFallback style={{ backgroundColor: friend.color }}>
+                          {friend.user.first_name[0]}
+                          {friend.user.last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">
+                          {friend.user.first_name} {friend.user.last_name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {friend.user.email}
+                        </p>
+                      </div>
+                    </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => {console.log(friend.user.user_id)}}
+                        >
+                          Remove
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Remove Friend</DialogTitle>
+                          <DialogDescription>
+                            Are you sure you want to remove {friend.user.first_name} {friend.user.last_name} from your friends list? This action cannot be undone.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button variant="outline">Cancel</Button>
+                          <Button variant="destructive">Remove Friend</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[300px] text-center">
+                <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="font-medium mb-1">No friends found</h3>
+                <p className="text-sm text-muted-foreground">
+                  {searchQuery 
+                    ? "Try adjusting your search terms" 
+                    : "Share your invite link to add friends"}
+                </p>
+              </div>
+            )}
+          </ScrollArea>
         </section>
       </div>
     </div>
-  );
+  )
 }
+

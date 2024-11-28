@@ -1,19 +1,11 @@
 "server only";
 
+import { supabase } from "@/lib/supabase";
 import { clerkClient } from "@clerk/nextjs/server";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import config from "@/tailwind.config";
 
 export const isAuthorized = async (
   userId: string
 ): Promise<{ authorized: boolean; message: string }> => {
-  if (!config?.payments?.enabled) {
-    return {
-      authorized: true,
-      message: "Payments are disabled",
-    };
-  }
 
   const result = (await clerkClient()).users.getUser(userId);
 
@@ -23,20 +15,6 @@ export const isAuthorized = async (
       message: "User not found",
     };
   }
-
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
 
   try {
     const { data, error } = await supabase
