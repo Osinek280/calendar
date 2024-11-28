@@ -2,7 +2,7 @@ import { Calendar } from "./components/calendar";
 import CalendarForm from "./components/form";
 
 export default function CalendarListPage() {
-  const hasCalendar = false;
+  const hasCalendar = true;
   return (
     <main className="flex flex-col flex-grow">
       <div className="flex-grow overflow-hidden">

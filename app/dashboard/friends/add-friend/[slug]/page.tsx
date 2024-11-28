@@ -46,6 +46,7 @@ export default function Friends({ params }: FriendsProps) {
 
         const data = await getFriendRequest(slug);
         if (data?.friend) {
+          console.log(data?.friend)
           setFriend(data.friend);
         } else {
           setError(true);
