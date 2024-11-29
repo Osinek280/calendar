@@ -1,4 +1,6 @@
-import React from 'react';
+'use client'
+
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, Plus, Settings, Users } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -18,52 +20,33 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { SheetClose, SheetTitle } from '@/components/ui/sheet';
+import { SheetTitle } from '@/components/ui/sheet';
+import { getCalendarsList } from '@/utils/actions/get-calendars';
 
 interface Calendar {
   id: string;
-  name: string;
+  title: string;
   color: string;
 }
 
-interface CalendarGroup {
-  name: string;
-  calendars: Calendar[];
-}
-
-export default function CalendarList() {
-  const [isMyPlansOpen, setIsMyPlansOpen] = React.useState(true);
-
-  const myPlans: CalendarGroup = {
-    name: "My Plans",
-    calendars: [
-      { id: '1', name: 'Personal', color: 'bg-blue-500' },
-      { id: '2', name: 'Work', color: 'bg-green-500' },
-      { id: '3', name: 'Family', color: 'bg-red-500' },
-      { id: '4', name: 'Projects', color: 'bg-purple-500' },
-    ]
-  };
+export default function CalendarList({ my_plans }: {my_plans: Calendar[]}) {
+  const [isMyPlansOpen, setIsMyPlansOpen] = useState(true);
+  const [myPlans, setMyPlans] = useState<Calendar[]>(my_plans);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const friendsCalendars: Calendar[] = [
-    { id: '5', name: 'Ania', color: 'bg-yellow-500' },
-    { id: '6', name: 'Weronika', color: 'bg-indigo-500' },
-    { id: '7', name: 'Aleksander', color: 'bg-pink-500' },
-    { id: '8', name: 'Weronika', color: 'bg-indigo-500' },
-    { id: '9', name: 'Aleksander', color: 'bg-pink-500' },
-    { id: '10', name: 'Weronika', color: 'bg-indigo-500' },
-    { id: '11', name: 'Aleksander', color: 'bg-pink-500' },
-    { id: '12', name: 'Weronika', color: 'bg-indigo-500' },
-    { id: '13', name: 'Aleksander', color: 'bg-pink-500' },
-    { id: '14', name: 'Weronika', color: 'bg-indigo-500' },
-    { id: '15', name: 'Aleksander', color: 'bg-pink-500' },
+    { id: '5', title: 'Ania', color: 'bg-yellow-500' },
+    { id: '6', title: 'Weronika', color: 'bg-indigo-500' },
+    { id: '7', title: 'Aleksander', color: 'bg-pink-500' },
   ];
 
   const renderCalendar = (calendar: Calendar) => (
     <div key={calendar.id} className="flex items-center justify-between py-2">
       <div className="flex items-center space-x-3">
-        <div className={`w-3 h-3 rounded-full ${calendar.color}`} />
-        <Label htmlFor={`calendar-switch-${calendar.id}`} className="font-medium text-sm text-gray-700 cursor-pointer">
-          {calendar.name}
+        <div className={`w-5 h-5 rounded-sm ${calendar.color}`} style={{ backgroundColor: calendar.color }} />
+        <Label htmlFor={`calendar-switch-${calendar.id}`} className="font-medium text-sm cursor-pointer">
+          {calendar.title}
         </Label>
       </div>
       <div className="flex items-center space-x-2">
@@ -71,7 +54,7 @@ export default function CalendarList() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu for {calendar.name}</span>
+              <span className="sr-only">Open menu for {calendar.title}</span>
               <Settings className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -99,11 +82,11 @@ export default function CalendarList() {
         <Input
           type="text"
           placeholder="Search calendars..."
-          className="pl-8"
+          className="pl-10"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 absolute left-2.5 top-2.5 text-gray-400"
+          className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -124,17 +107,23 @@ export default function CalendarList() {
           className="space-y-2"
         >
           <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between py-2 px-1 hover:bg-gray-100 rounded-md cursor-pointer">
+            <div className="flex items-center justify-between py-2 px-1 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
               <div className="flex items-center space-x-2">
                 {isMyPlansOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                <span className="font-semibold text-sm">{myPlans.name}</span>
+                <span className="font-semibold text-sm">My Plans</span>
               </div>
               <Button variant="ghost" size="sm">
+                {/* Add any additional button content if needed */}
               </Button>
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-2 ml-4">
-            {myPlans.calendars.map(renderCalendar)}
+            {isLoading && <p>Loading calendars...</p>}
+            {error && <p className="text-red-500">{error}</p>}
+            {!isLoading && !error && myPlans.length === 0 && (
+              <p>No calendars found. Create a new calendar to get started.</p>
+            )}
+            {!isLoading && !error && myPlans.map(renderCalendar)}
           </CollapsibleContent>
         </Collapsible>
         
@@ -142,7 +131,7 @@ export default function CalendarList() {
           <div className="flex items-center justify-between py-2 px-1">
             <div className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
-              <span className="font-semibold text-sm">Friends' Calendars</span>
+              <span className="font-semibold text-sm">Friends Calendars</span>
             </div>
           </div>
           <div className="ml-4 space-y-2">
@@ -156,9 +145,7 @@ export default function CalendarList() {
           <Plus className="h-4 w-4 mr-2" />
           New Calendar
         </Button>
-        {/* <SheetClose asChild> */}
-          <Button className="w-full">Submit</Button>
-        {/* </SheetClose> */}
+        <Button className="w-full">Submit</Button>
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalendarHeader } from '@/app/dashboard/calendar/components/calendar-header';
 import { DayCell } from '@/app/dashboard/calendar/components/day-cell';
 import { WeekView } from '@/app/dashboard/calendar/components/week-view';
 import { getDaysInMonth, getWeekDays } from '@/utils/dateUtils';
 import { addDays, startOfWeek, endOfWeek } from 'date-fns';
+import { getCalendarsList } from '@/utils/actions/get-calendars';
 
 interface Event {
   id: string;
@@ -15,9 +16,16 @@ interface Event {
   color?: string;
 }
 
+interface Calendar {
+  id: string;
+  title: string;
+  color: string;
+}
+
 export const Calendar: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 0, 1)); // January 2024
+  const [currentDate, setCurrentDate] = useState(new Date(2024, 0, 1));
   const [currentView, setCurrentView] = useState<'week' | 'month'>('month');
+  const [ myPlans, setMyPlans ] = useState<Calendar[]>([]) 
 
   const prevPeriod = () => {
     if (currentView === 'month') {
@@ -85,9 +93,23 @@ export const Calendar: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    const updateCalendars = async () => {
+      try{
+        const { my_plans } = await getCalendarsList()
+        setMyPlans(my_plans)
+      }catch(err) {
+        console.log(err)
+      }
+    }
+
+    updateCalendars()
+  }, [])
+
   return (
     <div className="h-full flex flex-col p-4">
       <CalendarHeader
+        myPlans={myPlans}
         currentDate={currentDate}
         onPrevPeriod={prevPeriod}
         onNextPeriod={nextPeriod}

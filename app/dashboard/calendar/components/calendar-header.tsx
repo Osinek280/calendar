@@ -20,15 +20,24 @@ import {
 import { cn } from "@/lib/utils";
 import CalendarList from './calendar-list';
 
+interface Calendar {
+  id: string;
+  title: string;
+  color: string;
+}
+
 interface CalendarHeaderProps {
   currentDate: Date;
   onPrevPeriod: () => void;
   onNextPeriod: () => void;
   onViewChange: (view: 'week' | 'month') => void;
   currentView: 'week' | 'month';
+  myPlans: Calendar[],
 }
 
+
 export const CalendarHeader = ({
+  myPlans,
   currentDate,
   onPrevPeriod,
   onNextPeriod,
@@ -75,7 +84,7 @@ export const CalendarHeader = ({
               </Button>
             </SheetTrigger>
             <SheetContent className='max-w-[600px] pt-[50px]'>
-              <CalendarList />
+              <CalendarList my_plans={myPlans} />
             </SheetContent>
           </Sheet>
           <DropdownMenu>
