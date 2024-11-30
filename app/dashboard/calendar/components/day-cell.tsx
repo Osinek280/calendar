@@ -20,7 +20,7 @@ export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday,
   const dayClasses = cn(
     "p-1 border transition-all duration-200",
     isCurrentMonth ? "bg-background" : "bg-muted dark:bg-background",
-    // isToday && "ring-2 ring-blue-400",
+    // isToday && "bg-blue-200",
     // !isCurrentMonth && "opacity-50"
   );
 

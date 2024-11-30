@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server";
 interface CalendarProps {
   title: string;
@@ -14,6 +14,8 @@ export async function addCalendar({title, color, isPublic}: CalendarProps) {
   if (!userId) {
     return "You must be signed in";
   }
+
+  const supabase = await createClient()
 
   try {
     const {error } = await supabase

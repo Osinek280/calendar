@@ -1,7 +1,7 @@
 "server only"
 
+import { createClient } from "@/lib/server";
 import { userCreateProps } from "@/utils/types";
-import { supabase } from "@/lib/supabase";
 
 export const userCreate = async ({
   email,
@@ -10,6 +10,7 @@ export const userCreate = async ({
   profile_image_url,
   user_id,
 }: userCreateProps) => {
+  const supabase = await createClient()
 
   try {
     const { data, error } = await supabase

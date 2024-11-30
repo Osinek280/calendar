@@ -13,9 +13,10 @@ interface Event {
 interface WeekViewProps {
   currentDate: Date;
   events: Event[];
+  today: string;
 }
 
-export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events }) => {
+export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }) => {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
@@ -38,7 +39,7 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events }) => {
   };
 
   return (
-    <div className="h-full border rounded-lg overflow-hidden">
+    <div className="h-full border rounded-lg">
       <div className="grid grid-cols-8 h-full">
         <div className="border-r">
           <div className="h-12 border-b"></div>
@@ -49,10 +50,12 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events }) => {
           ))}
         </div>
         {weekDays.map((day, dayIndex) => (
-          <div key={dayIndex} className="relative">
-            <div className="h-12 border-b text-center py-1">
-              <div className="text-sm font-semibold">{format(day, 'EEE')}</div>
-              <div className="text-xs">{format(day, 'd')}</div>
+          <div key={dayIndex}>
+            <div className="flex justify-center h-12 border-b text-center py-1">
+              <div className='bg-blue-600  w-10 h-10 rounded-full'>
+                <div className="text-sm font-semibold">{format(day, 'EEE')}</div>
+                <div className="text-xs">{format(day, 'd')}</div>
+              </div>
             </div>
             <div className="relative h-[calc(100%-3rem)]">
               {timeSlots.map((hour) => (

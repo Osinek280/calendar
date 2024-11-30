@@ -1,6 +1,6 @@
 "server only";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/server";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export const isAuthorized = async (
@@ -8,6 +8,8 @@ export const isAuthorized = async (
 ): Promise<{ authorized: boolean; message: string }> => {
 
   const result = (await clerkClient()).users.getUser(userId);
+
+  const supabase = await createClient()
 
   if (!result) {
     return {

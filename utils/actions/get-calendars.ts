@@ -1,6 +1,6 @@
 "use server"
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server"
 
 export async function getCalendarsList() {
@@ -9,6 +9,8 @@ export async function getCalendarsList() {
   if (!userId) {
     return { my_plans: [], friends: [], success: false };
   }
+
+  const supabase = await createClient()
 
   try {
     const { data: my_plans, error } = await supabase

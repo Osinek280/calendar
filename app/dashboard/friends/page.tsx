@@ -16,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Users } from 'lucide-react'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -23,6 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { removeFriend } from "@/utils/actions/add-friend"
+import { toast } from "sonner"
 
 export default function Friends() {
   const { user } = useUser()
@@ -59,6 +62,22 @@ export default function Friends() {
     friend.user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     friend.user.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const handleRemoveFriend = async (friendId: string) => {
+    try {
+      const response = await removeFriend(friendId) // Assuming removeFriend function exists
+      toast("Friend removed", {
+        description: "The friend has been successfully removed from your list.",
+      })
+      const updatedFriends = friendsList.filter(friend => friend.user.user_id !== friendId)
+      setFriendsList(updatedFriends)
+    } catch(err) {
+      console.log(err)
+      toast("Error", {
+        description: "There was an error removing the friend. Please try again.",
+      })
+    }
+  }
 
   return (
     <div className="flex w-full gap-4">
@@ -128,7 +147,6 @@ export default function Friends() {
                         <Button 
                           variant="destructive" 
                           size="sm"
-                          onClick={() => {console.log(friend.user.user_id)}}
                         >
                           Remove
                         </Button>
@@ -141,8 +159,10 @@ export default function Friends() {
                           </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <Button variant="outline">Cancel</Button>
-                          <Button variant="destructive">Remove Friend</Button>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <Button variant="destructive" onClick={() => {handleRemoveFriend(friend.user.user_id)}}>Remove Friend</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>

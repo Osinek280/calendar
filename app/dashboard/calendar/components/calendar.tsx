@@ -23,7 +23,7 @@ interface Calendar {
 }
 
 export const Calendar: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 0, 1));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<'week' | 'month'>('month');
   const [ myPlans, setMyPlans ] = useState<Calendar[]>([]) 
 
@@ -139,7 +139,7 @@ export const Calendar: React.FC = () => {
             </div>
           </div>
         ) : (
-          <WeekView currentDate={currentDate} events={getEventsForWeek()} />
+          <WeekView currentDate={currentDate} events={getEventsForWeek()} today={today.toDateString()}/>
         )}
       </div>
     </div>

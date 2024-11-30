@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/server";
 import { auth } from "@clerk/nextjs/server";
 
 export async function getFriends() {
@@ -9,6 +9,8 @@ export async function getFriends() {
   if (!userId) {
     return { friends: [], success: false };
   }
+
+  const supabase = await createClient()
 
   try {
     const { data: friendsList, error } = await supabase

@@ -9,16 +9,16 @@ datasource db {
 }
 
 model user {
-  id                Int       @id @default(autoincrement())
-  created_time      DateTime  @default(now())
-  email             String    @unique
+  id                Int      @id @default(autoincrement())
+  created_time      DateTime @default(now())
+  email             String   @unique
   first_name        String?
   last_name         String?
   gender            String?
   profile_image_url String?
-  user_id           String    @unique
+  user_id           String   @unique
   subscription      String?
-  active_calendars  String[] 
+  active_calendars  String[]
 
   friend friend[]
 }
@@ -32,15 +32,6 @@ model friend {
   nickname  String?  
   active    Boolean  @default(false) 
   user      user     @relation(fields: [user_id], references: [user_id])
-}
-
-model calendar {
-  id                Int      @id @default(autoincrement())
-  created_time      DateTime @default(now())
-  user_id           String
-  title             String
-  color             String
-  is_public         Boolean
 }
 
 model payments {

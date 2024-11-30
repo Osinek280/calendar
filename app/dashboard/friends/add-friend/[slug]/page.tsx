@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { useEffect, useState, use } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface Friend {
   profile_image_url: string;
@@ -32,6 +33,7 @@ interface FriendsProps {
 export default function Friends(props: FriendsProps) {
   const params = use(props.params);
   const { user } = useUser();
+  const router = useRouter();
 
   const [friend, setFriend] = useState<Friend | null>(null);
   const [error, setError] = useState(false);
@@ -67,6 +69,7 @@ export default function Friends(props: FriendsProps) {
       const response = await addFriend(slug);
   
       if (response.success) {
+        router.push('/dashboard/friends');
         toast.success("Friend added successfully!");
       } else {
         toast.error("You are already friend with");

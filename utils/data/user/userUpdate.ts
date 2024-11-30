@@ -1,5 +1,5 @@
 "server only";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/server";
 import { userUpdateProps } from "@/utils/types";
 
 export const userUpdate = async ({
@@ -9,6 +9,8 @@ export const userUpdate = async ({
   profile_image_url,
   user_id,
 }: userUpdateProps) => {
+
+  const supabase = await createClient()
 
   try {
     const { data, error } = await supabase
